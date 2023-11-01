@@ -1,0 +1,50 @@
+div[class^='appview-container'] section[class^='main'] { 
+	background-color: #001E3C;
+	border-color: #152d4d;
+	color: #FFFFFF;
+} 
+section[data-testid='stFileUploadDropzone'], 
+div[data-baseweb='select'], 
+div[data-baseweb='select'] div { 
+	background-color: #152d4d;
+	border-color: #152d4d;
+	color: #e0e0e0;
+} 
+div[class^='appview-container'] section[data-testid='stSidebar'] {
+	background-color: #001E3C;
+	border-right: 1px solid #152d4d;
+	color: #e0e0e0;
+} 
+button[kind='header'],
+button[kind='primary'],
+button[kind='secondary'],
+button[kind='minimal']{ height: 30px; }
+/*div[data-testid="stImage"], div[class*=' plotly'] {
+	box-shadow: #E0E0E0 0px 2px 1px -1px, #E0E0E0 0px 1px 1px 0px, #E0E0E0 0px 1px 3px 0px;
+	border-radius: 12px; 
+}*/
+button[data-testid='StyledFullScreenButton'] {
+	display: none;
+}
+.txth2 { 
+	 font-size: 28px;
+	 text-align:center; 
+	 color:#f5f5f5;
+	 text-shadow: 2px 2px #25252585; 
+}
+.myContainer { 
+	background-color: #152d4d;
+	color: #919293;
+	border-radius: 12px;
+	/*width: 250px;*/
+	/*box-shadow: #9B9B9B 0px 2px 1px -1px, #9B9B9B 0px 1px 1px 0px, #9B9B9B 0px 1px 3px 0px;*/
+} 
+#MainMenu, footer, header[data-testid="stHeader"], 
+div [data-testid='StyledLinkIconContainer'] a, 
+div [data-testid='StyledFullScreenButton'] { visibility: hidden; }
+section[data-testid="stSidebar"] div div[class^='css-10'] {
+	padding: 10px;
+}
+div[data-testid='block-container'] {
+	padding: 5px 20px ;
+}
