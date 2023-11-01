@@ -1,7 +1,5 @@
-# Welcome to streamlit
+# Welcome to Bankruptcy Predictor
 
-This is the app you get when you run `streamlit hello`, extracted as its own app.
+Please upload input file with data to predict
 
-Edit [Hello.py](./Hello.py) to customize this app to your heart's desire. ❤️
-
-Check it out on [Streamlit Community Cloud](https://st-hello-app.streamlit.app/)
+This app expects the input file to have 96 features as available in https://www.kaggle.com/datasets/fedesoriano/company-bankruptcy-prediction
