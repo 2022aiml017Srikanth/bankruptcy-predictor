@@ -34,6 +34,7 @@ import pickle
 import seaborn as sns
 import streamlit as st
 import streamlit.components.v1 as components
+from streamlit_modal import Modal
 import io
 
 import os
@@ -105,7 +106,7 @@ def myDataframeInfo(df):
     df.info(buf=buffer)    
     return buffer.getvalue()  
 
-def predictMyModel(modelFileName, my_red_df):   
+def predictMyModel(modelFileName, my_red_df, plt):   
     
     my_file_name = './PredictionModels/' + modelFileName
     
@@ -125,8 +126,7 @@ def predictMyModel(modelFileName, my_red_df):
     
     #=================================
     
-    f_conf_mtrx, ax = plt.subplots(figsize=(5, 5))
-    sns.set(font_scale=1.25)
+    f_conf_mtrx, ax = plt.subplots(figsize=(5, 5)) 
     sns.heatmap(conf_mtrx, square=True, annot=True, fmt="d", cmap="RdYlGn")   
 
     return y_pred, acrcy_scr, df_clsf_rep, f_conf_mtrx
@@ -688,7 +688,7 @@ def main():
             #====== Preprocessing Completed ====== 
             for mdlSelected in avl_buildModels: 
                 for dstSelected in avl_dataframes: 
-                    # Get Dataset as per user selection                      
+                    # Get Dataset as per user selection 
                     if(dstSelected == 'Original'):
                         # Applying Standard Scaling on X_features
                         df_selected = df_original.copy()
@@ -731,7 +731,7 @@ def main():
                     else:
                         mdlFileName = mdlSelected.replace(' ', '_') + '_Hyper_Parameter_Tuned_' + dstSelected.replace(' ', '_') + '.sav'
                         
-                    y_my_pred, acrcy_scr, df_clsf_rep, f_clsf_rep = predictMyModel(mdlFileName, df_selected)
+                    y_my_pred, acrcy_scr, df_clsf_rep, f_clsf_rep = predictMyModel(mdlFileName, df_selected, plt)
                     keyMetrics = {'Model': mdlSelected, 'Approach': 'HP', 'DS Type': dstSelected, 'Sampling': 'None', 
                                       'RecallZero': df_clsf_rep.iloc[0, 1], 'RecallOne': df_clsf_rep.iloc[1, 1],
                                       'PrecisionZero': df_clsf_rep.iloc[0, 0], 'PrecisionOne': df_clsf_rep.iloc[1, 0],
@@ -739,7 +739,7 @@ def main():
                                       'Accuracy': acrcy_scr
                     }
                     
-                    metricsInfo = metricsInfo.append(keyMetrics, ignore_index=True)
+                    metricsInfo = metricsInfo.append(keyMetrics, ignore_index=True) 
                     # tab_cmp
                     #==========================================================
                     exp_preprcs = tab_prediction.expander(mdlSelected + ' | ' + dstSelected + ' Dataset | Accuracy : ' + str(acrcy_scr), expanded=False)
@@ -758,11 +758,21 @@ def main():
                     container3 = subCol3.container()
                     container3.markdown("<br><br>", unsafe_allow_html=True) 
                     container3.dataframe(df_clsf_rep) 
+
+                    # Predictions in a dataframe
+                    df_inp = pd.DataFrame(df_selected.iloc[:, -1], columns=['Bankrupt?']).join(pd.DataFrame(df_selected.iloc[:, :-1]))
+                    df_predictions = pd.DataFrame(y_my_pred, columns=['Prediction']).join(df_inp) 
+                    exp_preprcs.markdown("<br>", unsafe_allow_html=True) 
+                    exp_preprcs.info('Correct Predictions')
+                    exp_preprcs.dataframe(df_predictions[df_predictions['Prediction'] == df_predictions['Bankrupt?']])
+                    exp_preprcs.markdown("<br>", unsafe_allow_html=True) 
+                    exp_preprcs.info('In-correct Predictions')
+                    exp_preprcs.dataframe(df_predictions[df_predictions['Prediction'] != df_predictions['Bankrupt?']])
                     #==========================================================
-                        
+ 
             # Write consolidated results to COMPARISION Tab after all combinations are executed
             metricsInfo = metricsInfo.sort_values(by = ['RecallOne', 'RecallZero'], ascending = [False, False])
-            tab_cmp.write(metricsInfo)         
+            tab_cmp.write(metricsInfo) 
             
 if __name__ == '__main__':
     main()
