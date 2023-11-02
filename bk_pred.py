@@ -34,7 +34,6 @@ import pickle
 import seaborn as sns
 import streamlit as st
 import streamlit.components.v1 as components
-from streamlit_modal import Modal
 import io
 
 import os
