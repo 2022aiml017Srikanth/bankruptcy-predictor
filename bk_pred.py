@@ -33,7 +33,8 @@ import pandas as pd
 import pickle
 import seaborn as sns
 import streamlit as st
-import streamlit.components.v1 as components 
+import streamlit.components.v1 as components
+from streamlit_modal import Modal
 import io
 
 import os
@@ -365,13 +366,24 @@ def main():
     metricsInfo = pd.DataFrame(columns=['Model', 'Approach', 'DS Type', 'Sampling', 'RecallOne', 'RecallZero', 
                                         'PrecisionOne', 'PrecisionZero', 'F1ScoreOne', 'F1ScoreZero']) 
     #============================================================================
-    # Sidebar - Upload Data File
-    uploaded_file = st.sidebar.file_uploader("Upload Your .csv File", type='csv')
-    if ( uploaded_file is not None ):
-        data = OnFileUpload(uploaded_file)
-        data.columns = data.columns.str.strip() 
-    else: return   
-     
+    data = None
+    ck_bx = st.sidebar.checkbox('Use DEMO file')
+    st.markdown(f'''
+                    <style> div [data-testid="stCheckbox"] label span.st-dz {{ margin-top: 15px; }} </style>
+                ''', unsafe_allow_html=True)
+    # Use demo file  
+    if ck_bx: 
+        data = pd.read_csv('./Resources/data_7030_predict.csv')
+        # data.columns = data.columns.str.strip()
+    else:         
+        # Sidebar - Upload Data File
+        uploaded_file = st.sidebar.file_uploader("Upload Your .csv File", type='csv')
+        if ( uploaded_file is not None ):
+            data = OnFileUpload(uploaded_file)
+            # data.columns = data.columns.str.strip() 
+        else: return   
+
+    data.columns = data.columns.str.strip() 
     # getBasicStatistics(data, tab_ovr) 
     col1, col2, col3, col4 = tab_ovr.columns([0.25, 0.25, 0.25, 0.25]) 
 
