@@ -33,7 +33,8 @@ import pandas as pd
 import pickle
 import seaborn as sns
 import streamlit as st
-import streamlit.components.v1 as components 
+import streamlit.components.v1 as components
+from streamlit_modal import Modal
 import io
 
 import os
@@ -366,12 +367,15 @@ def main():
                                         'PrecisionOne', 'PrecisionZero', 'F1ScoreOne', 'F1ScoreZero']) 
     #============================================================================
     data = None
-    ck_bx = st.sidebar.checkbox('Use DEMO file')
+    avl_dataframes = None
+    avl_buildModels = None
+    
+    cbx_demo_file = st.sidebar.checkbox('Use DEMO file')
     st.markdown(f'''
                     <style> div [data-testid="stCheckbox"] label span.st-dz {{ margin-top: 15px; }} </style>
                 ''', unsafe_allow_html=True)
     # Use demo file  
-    if ck_bx: 
+    if cbx_demo_file: 
         data = pd.read_csv('./Resources/data_7030_predict.csv')
         # data.columns = data.columns.str.strip()
     else:         
@@ -383,6 +387,20 @@ def main():
         else: return   
 
     data.columns = data.columns.str.strip() 
+
+    # Sidebar -  multi-select widgets 
+
+    if st.sidebar.checkbox('All Datasets'): 
+        avl_dataframes   = st.sidebar.multiselect('Select Input Dataset', avl_dfs, avl_dfs)
+    else: 
+        avl_dataframes   = st.sidebar.multiselect('Select Input Dataset', avl_dfs, avl_dfs[0])
+
+    if st.sidebar.checkbox('All Models'): 
+        avl_buildModels  = st.sidebar.multiselect('Select Model', avl_models, avl_models)
+    else: 
+        avl_buildModels  = st.sidebar.multiselect('Select Model', avl_models, avl_models[0])
+    #======================================================================================
+    
     # getBasicStatistics(data, tab_ovr) 
     col1, col2, col3, col4 = tab_ovr.columns([0.25, 0.25, 0.25, 0.25]) 
 
@@ -620,11 +638,7 @@ def main():
     # tab_ovr.info(df_featureDesc[df_featureDesc['Feature'] == 'Operating Gross Margin'].iloc[0, 2]) 
     tab_ovr.info(df_featureDesc[df_featureDesc['Feature'] == vizOptn].iloc[0, 2]) 
     #============================================================================
-    df_original = data.copy()  
-    
-    # Sidebar -  multi-select widgets 
-    avl_dataframes   = st.sidebar.multiselect('Select Input Dataset', avl_dfs, avl_dfs[0])
-    avl_buildModels  = st.sidebar.multiselect('Select Model', avl_models, avl_models[0])
+    df_original = data.copy()   
     
     if (len(avl_dataframes) and len(avl_buildModels)):
         if st.sidebar.button('Predict', type="secondary"):
